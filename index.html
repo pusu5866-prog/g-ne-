@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonsuz Küçük Bir An</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c1b 0%, #201a30 50%, #2d142c 100%);
+            --text-main: #fff5f7;
+            --text-sub: #ff7597;
+            --rabbit-left-color: #f5eedc;
+            --rabbit-right-color: #e3d5ca;
+            --pink-blush: rgba(255, 105, 180, 0.4);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            font-family: 'Cinzel', 'Georgia', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            text-align: center;
+            color: var(--text-main);
+            user-select: none;
+        }
+
+        /* --- Arka Plan Gece Efekti --- */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* --- Sinematik Sahne --- */
+        .cinema-stage {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 2;
+            margin-bottom: 40px;
+        }
+
+        /* Projektör Işığı Hissiyatı */
+        .light-beam {
+            position: absolute;
+            bottom: 0;
+            width: 200px;
+            height: 250px;
+            background: radial-gradient(circle at bottom, rgba(255, 117, 151, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            transition: all 1.5s ease;
+        }
+
+        /* Tavşan Gövdeleri */
+        .rabbit {
+            position: relative;
+            width: 65px;
+            height: 95px;
+            border-radius: 35px 35px 25px 25px;
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            bottom: 20px;
+        }
+
+        .rabbit-left {
+            background: var(--rabbit-left-color);
+            margin-right: 45px;
+            box-shadow: -4px 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .rabbit-right {
+            background: var(--rabbit-right-color);
+            box-shadow: 4px 4px 20px rgba(0,0,0,0.4);
+        }
+
+        /* Sinematik Kulaklar */
+        .rabbit::before, .rabbit::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            width: 16px;
+            height: 50px;
+            border-radius: 50% 50% 0 0;
+            transition: transform 1.2s ease;
+        }
+        
+        .rabbit-left::before { left: 8px; background: var(--rabbit-left-color); transform: rotate(-8px); box-shadow: inset 0 6px 0 var(--pink-blush); }
+        .rabbit-left::after { right: 8px; background: var(--rabbit-left-color); transform: rotate(4px); box-shadow: inset 0 6px 0 var(--pink-blush); }
+        .rabbit-right::before { left: 8px; background: var(--rabbit-right-color); transform: rotate(-4px); box-shadow: inset 0 6px 0 var(--pink-blush); }
+        .rabbit-right::after { right: 8px; background: var(--rabbit-right-color); transform: rotate(8px); box-shadow: inset 0 6px 0 var(--pink-blush); }
+
+        /* Gözler ve İfadeler */
+        .eye {
+            position: absolute;
+            top: 32px;
+            width: 6px;
+            height: 6px;
+            background: #1a1523;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+        }
+        .rabbit-left .eye-left { left: 16px; }
+        .rabbit-left .eye-right { right: 16px; }
+        .rabbit-right .eye-left { left: 16px; }
+        .rabbit-right .eye-right { right: 16px; }
+
+        .blush {
+            position: absolute;
+            top: 40px;
+            width: 10px;
+            height: 5px;
+            background: #ff8fa3;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        .rabbit-left .blush-left { left: 10px; }
+        .rabbit-left .blush-right { right: 10px; }
+        .rabbit-right .blush-left { left: 10px; }
+        .rabbit-right .blush-right { right: 10px; }
+
+        /* İpek Dokunuşlu Kollar */
+        .arm {
+            position: absolute;
+            top: 48px;
+            width: 24px;
+            height: 12px;
+            border-radius: 10px;
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .rabbit-left .arm { background: var(--rabbit-left-color); right: -8px; transform: rotate(10px); transform-origin: left center; }
+        .rabbit-right .arm { background: var(--rabbit-right-color); left: -8px; transform: rotate(-10px); transform-origin: right center; }
+
+        /* --- Sarılma Efektleri Aktivasyonu --- */
+        .cinema-stage.hugged .light-beam {
+            background: radial-gradient(circle at bottom, rgba(255, 117, 151, 0.3) 0%, transparent 80%);
+            width: 300px;
+        }
+
+        .cinema-stage.hugged .rabbit-left {
+            transform: translateX(26px) rotate(4px);
+        }
+
+        .cinema-stage.hugged .rabbit-right {
+            transform: translateX(-26px) rotate(-4px);
+        }
+
+        .cinema-stage.hugged .rabbit-left .arm {
+            transform: rotate(-25px) scaleX(1.4);
+            right: -14px;
+            z-index: 5;
+        }
+
+        .cinema-stage.hugged .rabbit-right .arm {
+            transform: rotate(25px) scaleX(1.4);
+            left: -14px;
+            z-index: 5;
+        }
+
+        /* Mutluluktan Kısılan Gözler */
+        .cinema-stage.hugged .eye {
+            height: 2px;
+            border-radius: 0;
+            top: 34px;
+        }
+
+        /* Güneş Teşekkür Pankartı */
+        .sun-banner {
+            position: absolute;
+            bottom: 130px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff5f7;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-family: sans-serif;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .cinema-stage.hugged .sun-banner {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* --- Geliştirilmiş Sinematik Tipografi --- */
+        .love-quote-container {
+            max-width: 85%;
+            width: 500px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+
+        .love-quote {
+            font-size: 19px;
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+            color: var(--text-main);
+            font-weight: 400;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .love-quote::before, .love-quote::after {
+            content: '"';
+            color: var(--text-sub);
+            font-size: 24px;
+        }
+
+        /* --- Minimalist Onay Kutusu --- */
+        .cinema-checkbox-wrapper {
+            margin-top: 35px;
+            z-index: 2;
+        }
+
+        .cinema-label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px 24px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s ease;
+        }
+
+        .cinema-label:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 117, 151, 0.3);
+        }
+
+        .cinema-label input {
+            display: none;
+        }
+
+        .cinema-box {
+            width: 18px;
+            height: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 4px;
+            margin-right: 14px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .cinema-label input:checked + .cinema-box {
+            background: var(--text-sub);
+            border-color: var(--text-sub);
+            box-shadow: 0 0 10px rgba(255, 117, 151, 0.6);
+        }
+
+        .cinema-box::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .cinema-label input:checked + .cinema-box::after {
+            opacity: 1;
+        }
+
+        .cinema-text {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .cinema-label input:checked ~ .cinema-text {
+            color: var(--text-main);
+        }
+
+        /* Sinematik Işıltı Animasyonu */
+        .sparkle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: glow linear forwards;
+        }
+
+        @keyframes glow {
+            0% { transform: scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: scale(1.5) translateY(-60px); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="initAudio()">
+
+    <!-- Ravyn Lenae - Love Me Not R&B Havası İçin Arka Plan Müziği -->
+    <!-- Not: Kendi .mp3 dosyanızı bu klasöre atıp adını "lovemenot.mp3" yaparak da bağlayabilirsiniz -->
+    <audio id="cinema-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Parıldayan Gökyüzü Yıldızları -->
+    <div class="stars" id="star-field"></div>
+
+    <!-- Sinematik Sahne -->
+    <div class="cinema-stage" id="main-stage">
+        <div class="light-beam"></div>
+        <div class="sun-banner">Her gün bana güneş olduğunuz için teşekkürler! ☀️</div>
+        
+        <!-- Sol Kadife Tavşan -->
+        <div class="rabbit rabbit-left">
+            <div class="eye eye-left"></div>
+            <div class="eye eye-right"></div>
+            <div class="blush blush-left"></div>
+            <div class="blush blush-right"></div>
+            <div class="arm"></div>
+        </div>
+
+        <!-- Sağ Kadife Tavşan -->
+        <div class="rabbit rabbit-right">
+            <div class="eye eye-left"></div>
+            <div class="eye eye-right"></div>
+            <div class="blush blush-left"></div>
+            <div class="blush blush-right"></div>
+            <div class="arm"></div>
+        </div>
+    </div>
+
+    <!-- Yazım Kurallarına Uygun Sinematik Söz -->
+    <div class="love-quote-container">
+        <p class="love-quote">
+            Karanlık bir gökyüzünde kaybolmuşken tam zamanında doğan benzersiz bir şafak gibisin. Hayatın tüm karmaşası ve gürültüsü arasında, varlığınla ruhuma fısıldayan en dingin melodi sensin. İyi ki varsın, kalbimin en güzel derinliği.
+        </p>
+    </div>
+
+    <!-- Modern ve Şık Onay Kutusu -->
+    <div class="cinema-checkbox-wrapper">
+        <label class="cinema-label">
+            <input type="checkbox" id="action-trigger" onchange="triggerHug(this)">
+            <div class="cinema-box"></div>
+            <span class="cinema-text">Onaylıyorum</span>
+        </label>
+    </div>
+
+    <script>
+        let audioContextStarted = false;
+
+        // Sayfa yüklenince arka plan yıldızlarını oluşturur
+        window.addEventListener('DOMContentLoaded', () => {
+            const starField = document.getElementById('star-field');
+            for (let i = 0; i < 60; i++) {
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.background = 'white';
+                star.style.width = Math.random() * 2 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.opacity = Math.random() * 0.5 + 0.2;
+                star.style.borderRadius = '50%';
+                starField.appendChild(star);
+            }
+        });
+
+        // Ravyn Lenae tarzı kadife ses/müzik başlangıcı
+        function initAudio() {
+            if (!audioContextStarted) {
+                const audio = document.getElementById('cinema-audio');
+                audio.volume = 0.35;
+                audio.play().catch(err => console.log("Müzik etkileşim bekliyor..."));
+                audioContextStarted = true;
+            }
+        }
+
+        // Sarılma ve Işıltı Animasyonu Tetikleyici
+        function triggerHug(element) {
+            const stage = document.getElementById('main-stage');
+            if (element.checked) {
+                stage.classList.add('hugged');
+                createCinematicSparkles();
+            } else {
+                stage.classList.remove('hugged');
+            }
+        }
+
+        // Havada süzülen şık parçacıklar üretir
+        function createCinematicSparkles() {
+            for (let i = 0; i < 25; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.classList.add('sparkle');
+                    
+                    // Pembe ve altın tonlarında ışıklar
+                    const colors = ['#ff7597', '#fff5f7', '#ffb3c6', '#ffe5ec'];
+                    sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const size = Math.random() * 6 + 4;
+                    sparkle.style.width = size + 'px';
+                    sparkle.style.height = size + 'px';
+                    
+                    // Tavşanların etrafında konumlandırma
+                    const stageRect = document.getElementById('main-stage').getBoundingClientRect();
+                    sparkle.style.left = (stageRect.left + (stageRect.width / 2) + (Math.random() * 100 - 50)) + 'px';
+                    sparkle.style.top = (stageRect.top + (stageRect.height / 2) + (Math.random() * 60 - 20)) + 'px';
+                    
+                    sparkle.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => { sparkle.remove(); }, 3500);
+                }, i * 120);
+            }
+        }
+    </script>
+</body>
+</html>
